@@ -8,8 +8,15 @@ const port = 3000;
 // Static files
 app.use(express.static(path.join(__dirname, 'public')))
 
+// Middleware xử lý việc lưu data vào req.body (POST method)
+app.use(express.urlencoded({
+  extended: true
+})) // Trong TH như sử dụng form input
+app.use(express.json())  //Trong TH client sd thư viện ngoài như: XMLHttpRequest, fetch, axios, ...
+
 // HTTP logger
-app.use(morgan('combined'))
+// app.use(morgan('combined'))
+
 
 // Template engine
 app.engine('.hbs', engine({
@@ -29,6 +36,13 @@ app.get('/news', (req, res) => {
 
 app.get('/search', (req, res) => {
   res.render('search');
+})
+
+app.post('/search', (req, res) => {
+
+  console.log(req.body);
+
+  res.send('');
 })
 
 app.listen(port, () => {
