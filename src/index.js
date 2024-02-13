@@ -5,14 +5,19 @@ const { engine } = require('express-handlebars');
 const app = express();
 const port = 3000;
 
+const route = require('./routes');
+
+
 // Static files
 app.use(express.static(path.join(__dirname, 'public')))
+
 
 // Middleware xử lý việc lưu data vào req.body (POST method)
 app.use(express.urlencoded({
   extended: true
 })) // Trong TH như sử dụng form input
-app.use(express.json())  //Trong TH client sd thư viện ngoài như: XMLHttpRequest, fetch, axios, ...
+app.use(express.json())  // Trong TH client sd thư viện ngoài như: XMLHttpRequest, fetch, axios, ...
+
 
 // HTTP logger
 // app.use(morgan('combined'))
@@ -26,24 +31,11 @@ app.set('view engine', '.hbs');
 app.set('views', path.join(__dirname, 'resources/views'));
 
 
-app.get('', (req, res) => {
-  res.render('home');
-})
+// HOME, SEARCH, CONTACT: không thuộc tài nguyên nào cụ thể cả, không nên tạo 1 controller riêng cho mấy thằng này
 
-app.get('/news', (req, res) => {
-  res.render('news');
-})
+// Routes init
+route(app);
 
-app.get('/search', (req, res) => {
-  res.render('search');
-})
-
-app.post('/search', (req, res) => {
-
-  console.log(req.body);
-
-  res.send('');
-})
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
