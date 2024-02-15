@@ -34,7 +34,8 @@ app.engine(
     }),
 );
 app.set('view engine', '.hbs');
-app.set('views', path.join(__dirname, 'resources/views'));
+app.set('views', path.join(__dirname, 'resources', 'views')); // do mỗi hệ điều hành sẽ viết khác nhau (window là '\\'...) vì thế nên tách ra như này
+// app.set('views', path.join(__dirname, 'resources/views'));
 
 // HOME, SEARCH, CONTACT: không thuộc tài nguyên nào cụ thể cả, không nên tạo 1 controller riêng cho mấy thằng này
 
@@ -42,5 +43,5 @@ app.set('views', path.join(__dirname, 'resources/views'));
 route(app);
 
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
+    console.log(`App listening on port ${port}`);
 });
