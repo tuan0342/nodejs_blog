@@ -1,5 +1,6 @@
 const Course = require('../models/Course');
 const { mongooseToObject } = require('../../util/mongoose');
+const { response } = require('express');
 
 class CourseController {
     // [GET]  /courses/:slug
@@ -13,6 +14,20 @@ class CourseController {
             .catch(next);
 
         // res.send('COURSE DETAIL!!!' + req.params.slug);
+    }
+
+    // [GET]  /courses/create
+    create(req, res, next) {
+        res.render('courses/create');
+    }
+
+    // [POST]  /courses/store
+    store(req, res, next) {
+        const course = new Course(req.body);
+        course
+            .save()
+            .then(() => res.redirect('home'))
+            .catch((error) => {});
     }
 }
 
