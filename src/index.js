@@ -1,7 +1,9 @@
 const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
+const methodOverride = require('method-override');
 const { engine } = require('express-handlebars');
+
 const app = express();
 const port = 3000;
 
@@ -23,6 +25,10 @@ app.use(
 ); // Trong TH như sử dụng form input
 app.use(express.json()); // Trong TH client sd thư viện ngoài như: XMLHttpRequest, fetch, axios, ...
 
+// Method-override
+// override phương thức POST, PUT, DELETE,... VD: phía client vẫn gửi đi là POST nhưng phía server sẽ thực hiện là PUT
+app.use(methodOverride('_method'));
+
 // HTTP logger
 // app.use(morgan('combined'))
 
@@ -31,6 +37,9 @@ app.engine(
     '.hbs',
     engine({
         extname: '.hbs',
+        helpers: {
+            sum: (a, b) => a + b, // tự tạo định nghĩa hàm (dùng trong việc tăng index của mảng)
+        },
     }),
 );
 app.set('view engine', '.hbs');
