@@ -5,9 +5,18 @@ const { response } = require('express');
 class MeController {
     // [GET]  /me/stored/courses
     storedCourses(req, res, next) {
+        let courseQuery = Course.find();
+
+        // Cách 1: Sắp xếp
+        if (req.query.hasOwnProperty('_sort')) {
+            courseQuery = courseQuery.sort({
+                [req.query.column]: req.query.type,
+            });
+        }
+
         // Xử lý bất đồng bộ: Promise
         Promise.all([
-            Course.find(),
+            courseQuery,
             Course.countDocuments(),
             Course.countDocumentsWithDeleted(),
         ])

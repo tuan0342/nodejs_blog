@@ -11,13 +11,15 @@ const route = require('./routes');
 
 const db = require('./config/db/index');
 
+const sortMiddleware = require('./app/middlewares/sortMiddleware');
+
 // Connect to db
 db.connect();
 
-// Static files
+// Middleware: Static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Middleware xử lý việc lưu data vào req.body (POST method)
+// Middleware: xử lý việc lưu data vào req.body (POST method)
 app.use(
     express.urlencoded({
         extended: true,
@@ -25,9 +27,32 @@ app.use(
 ); // Trong TH như sử dụng form input
 app.use(express.json()); // Trong TH client sd thư viện ngoài như: XMLHttpRequest, fetch, axios, ...
 
-// Method-override
+// Middleware: Method-override
 // override phương thức POST, PUT, DELETE,... VD: phía client vẫn gửi đi là POST nhưng phía server sẽ thực hiện là PUT
 app.use(methodOverride('_method'));
+
+// Middleware: apply sort middleware
+app.use(sortMiddleware);
+
+// Middleware: Example
+app.get(
+    '/middleware',
+    function (req, res, next) {
+        if (['vethuong', 'vevip'].includes(req.query.ve)) {
+            req.face = 'Gach gach gach!!!';
+            return next();
+        }
+        res.status(403).json({
+            message: 'Access denied',
+        });
+    },
+    function (req, res, next) {
+        res.json({
+            message: 'Successfully!',
+            face: req.face,
+        });
+    },
+);
 
 // HTTP logger
 // app.use(morgan('combined'))
@@ -39,6 +64,20 @@ app.engine(
         extname: '.hbs',
         helpers: {
             sum: (a, b) => a + b, // tự tạo định nghĩa hàm (dùng trong việc tăng index của mảng)
+            sortable: (field, sort) => {
+                const sortType = field === sort.column ? sort.type : 'default';
+
+                const icons = {
+                    default: `<a href="?_sort&column=${field}&type=asc">^</a>
+                              <a href="?_sort&column=${field}&type=desc">v</a>`,
+                    asc: `<a href="?_sort&column=${field}&type=desc">v</a>`,
+                    desc: `<a href="?_sort&column=${field}&type=asc">^</a>`,
+                };
+
+                const icon = icons[sortType];
+
+                return `${icon}`;
+            },
         },
     }),
 );
