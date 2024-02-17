@@ -7,7 +7,7 @@ class MeController {
     storedCourses(req, res, next) {
         // Xử lý bất đồng bộ: Promise
         Promise.all([
-            Course.find(),
+            Course.find().sortableQuery(req),
             Course.countDocuments(),
             Course.countDocumentsWithDeleted(),
         ])
