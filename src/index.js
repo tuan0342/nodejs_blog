@@ -62,23 +62,7 @@ app.engine(
     '.hbs',
     engine({
         extname: '.hbs',
-        helpers: {
-            sum: (a, b) => a + b, // tự tạo định nghĩa hàm (dùng trong việc tăng index của mảng)
-            sortable: (field, sort) => {
-                const sortType = field === sort.column ? sort.type : 'default';
-
-                const icons = {
-                    default: `<a href="?_sort&column=${field}&type=asc">^</a>
-                              <a href="?_sort&column=${field}&type=desc">v</a>`,
-                    asc: `<a href="?_sort&column=${field}&type=desc">v</a>`,
-                    desc: `<a href="?_sort&column=${field}&type=asc">^</a>`,
-                };
-
-                const icon = icons[sortType];
-
-                return `${icon}`;
-            },
-        },
+        helpers: require('./helpers/handlebars'),
     }),
 );
 app.set('view engine', '.hbs');
